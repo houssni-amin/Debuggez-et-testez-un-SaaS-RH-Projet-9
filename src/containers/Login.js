@@ -48,6 +48,7 @@ export default class Login {
 
 	handleSubmitAdmin = (e) => {
 		e.preventDefault()
+		// Ciblage des champs "admin" au lieu de "employee"
 		const user = {
 			type: "Admin",
 			email: e.target.querySelector(`input[data-testid="admin-email-input"]`)
