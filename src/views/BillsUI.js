@@ -20,7 +20,14 @@ const row = (bill) => {
 }
 
 const rows = (data) => {
-	return data && data.length ? data.map((bill) => row(bill)).join("") : ""
+	return data && data.length
+		? data
+				// Tri des factures par date décroissante
+				.sort((a, b) => (a.date < b.date ? 1 : -1))
+				// Transformation de chaque facture en ligne HTML
+				.map((bill) => row(bill))
+				.join("")
+		: ""
 }
 
 export default ({ data: bills, loading, error }) => {
