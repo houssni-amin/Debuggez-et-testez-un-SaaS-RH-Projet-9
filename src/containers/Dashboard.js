@@ -14,7 +14,7 @@ export const filteredBills = (data, status) => {
 				if (typeof jest !== "undefined") {
 					selectCondition = bill.status === status
 				} else {
-				/* istanbul ignore next */
+					/* istanbul ignore next */
 					// in prod environment
 					const userEmail = JSON.parse(localStorage.getItem("user")).email
 					selectCondition =
@@ -153,9 +153,10 @@ export default class {
 		}
 
 		bills.forEach((bill) => {
-			$(`#open-bill${bill.id}`).click((e) =>
-				this.handleEditTicket(e, bill, bills),
-			)
+			$(`#open-bill${bill.id}`)
+				// Retire l'ancien écouteur pour éviter le bug des clics en double
+				.off("click")
+				.click((e) => this.handleEditTicket(e, bill, bills))
 		})
 
 		return bills
