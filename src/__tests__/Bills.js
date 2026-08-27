@@ -79,5 +79,21 @@ describe("Given I am connected as an employee", () => {
 				expect(onNavigate).toHaveBeenLastCalledWith(ROUTES_PATH["NewBill"])
 			})
 		})
+
+		describe("when I click on the iconEye button", () => {
+			test("then the modale should open with the picture", () => {
+				document.body.innerHTML = BillsUI({ data: bills })
+				new Bills({
+					document,
+					onNavigate,
+					store: null,
+					localStorage: window.localStorage,
+				})
+				const button = screen.getAllByTestId("icon-eye")
+				$.fn.modal = jest.fn()
+				fireEvent.click(button[0])
+				expect($.fn.modal).toHaveBeenLastCalledWith("show")
+			})
+		})
 	})
 })
