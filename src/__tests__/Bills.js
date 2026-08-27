@@ -2,13 +2,15 @@
  * @jest-environment jsdom
  */
 
-import { screen, waitFor } from "@testing-library/dom"
+import { fireEvent, getByTestId, screen, waitFor } from "@testing-library/dom"
 import BillsUI from "../views/BillsUI.js"
 import { bills } from "../fixtures/bills.js"
 import { ROUTES_PATH } from "../constants/routes.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 
 import router from "../app/Router.js"
+import Bills from "../containers/Bills.js"
+import { modal } from "../views/DashboardFormUI.js"
 
 describe("Given I am connected as an employee", () => {
 	describe("When I am on Bills Page", () => {
@@ -60,6 +62,22 @@ describe("Given I am connected as an employee", () => {
 			expect(secondBillType).toBeTruthy()
 			const thirdBillType = await screen.getByText("Transports")
 			expect(thirdBillType).toBeTruthy()
+		})
+
+		describe("when I click on the new bill button", () => {
+			test("then I should be redirected to new bills page", () => {
+				const onNavigate = jest.fn()
+				document.body.innerHTML = BillsUI({ data: bills })
+				new Bills({
+					document,
+					onNavigate,
+					store: null,
+					localStorage: window.localStorage,
+				})
+				const button = screen.getByTestId("btn-new-bill")
+				fireEvent.click(button)
+				expect(onNavigate).toHaveBeenLastCalledWith(ROUTES_PATH["NewBill"])
+			})
 		})
 	})
 })
