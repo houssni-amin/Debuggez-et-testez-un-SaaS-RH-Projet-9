@@ -101,16 +101,30 @@ describe("Given I am connected as an employee", () => {
 
 		describe("when I click on the iconEye button", () => {
 			test("then the modale should open with the picture", () => {
+				// Surveillance de la fonction de navigation
+				const onNavigate = jest.fn()
+
+				// Génération de l'interface utilisateur de la page Bills
 				document.body.innerHTML = BillsUI({ data: bills })
+
+				// Initialisation du contrôleur de la page
 				new Bills({
 					document,
 					onNavigate,
 					store: null,
 					localStorage: window.localStorage,
 				})
+
+				// Ciblage des boutons "oeil" présents sur la page
 				const button = screen.getAllByTestId("icon-eye")
+
+				// Surveillance pour la simulation de l'affichage de la modale avec Bootstrap
 				$.fn.modal = jest.fn()
+
+				// Simulation du clic sur le premier bouton "œil"
 				fireEvent.click(button[0])
+
+				// Vérification : on s'assure que l'instruction "show" est présente pour afficher la modale
 				expect($.fn.modal).toHaveBeenLastCalledWith("show")
 			})
 		})
