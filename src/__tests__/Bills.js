@@ -74,16 +74,27 @@ describe("Given I am connected as an employee", () => {
 
 		describe("when I click on the new bill button", () => {
 			test("then I should be redirected to new bills page", () => {
+				// Surveillance de la fonction de navigation
 				const onNavigate = jest.fn()
+
+				// Génération de l'interface utilisateur de la page Bills
 				document.body.innerHTML = BillsUI({ data: bills })
+
+				// Initialisation du contrôleur de la page
 				new Bills({
 					document,
 					onNavigate,
 					store: null,
 					localStorage: window.localStorage,
 				})
+
+				// Ciblage du bouton "Nouvelle note de frais" dans le DOM
 				const button = screen.getByTestId("btn-new-bill")
+
+				// Simulation du clic utilisateur sur ce bouton
 				fireEvent.click(button)
+
+				// Vérification : Confirmation que l'app a bien navigué vers la route "NewBill"
 				expect(onNavigate).toHaveBeenLastCalledWith(ROUTES_PATH["NewBill"])
 			})
 		})
