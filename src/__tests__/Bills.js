@@ -131,6 +131,7 @@ describe("Given I am connected as an employee", () => {
 
 		describe("when the API returns a valid bills", () => {
 			test("then bills should be formatted correctly", async () => {
+				// Création d'un faux backend (mock) qui simule une réponse positive de l'API avec nos fausses factures
 				const mockStore = {
 					bills: () => ({
 						list: () => {
@@ -138,13 +139,22 @@ describe("Given I am connected as an employee", () => {
 						},
 					}),
 				}
+
+				// Surveillance de la fonction de navigation
+				const onNavigate = jest.fn()
+
+				// Initialisation du contrôleur de la page en lui injectant notre faux backend (mockStore)
 				const billsInit = new Bills({
 					document,
 					onNavigate,
 					store: mockStore,
 					localStorage: window.localStorage,
 				})
+
+				// Exécution de la méthode pour récupérer les factures
 				const result = await billsInit.getBills()
+
+				// Vérification : on s'assure que le nombre de factures formatées et récupérées correspond bien
 				expect(result).toHaveLength(bills.length)
 			})
 		})
