@@ -45,20 +45,29 @@ describe("Given I am connected as an employee", () => {
 		})
 
 		test("fetches bills from mock API GET", async () => {
+			// Simulation d'un utilisateur connecté (Employé) dans le localStorage
 			localStorage.setItem(
 				"user",
 				JSON.stringify({ type: "Employee", email: "a@a" }),
 			)
+
+			// Création et injection du conteneur dans le DOM
 			const root = document.createElement("div")
 			root.setAttribute("id", "root")
 			document.body.append(root)
 			router()
+
+			// Navigation vers la page Bills et attente du chargement de la page
 			window.onNavigate(ROUTES_PATH.Bills)
 			await waitFor(() => screen.getByText("Mes notes de frais"))
+
+			// Vérification de la présence des factures simulées à l'écran
 			const firstBillType = await screen.getByText("Restaurants et bars")
 			expect(firstBillType).toBeTruthy()
+
 			const secondBillType = await screen.getByText("Hôtel et logement")
 			expect(secondBillType).toBeTruthy()
+
 			const thirdBillType = await screen.getByText("Transports")
 			expect(thirdBillType).toBeTruthy()
 		})
