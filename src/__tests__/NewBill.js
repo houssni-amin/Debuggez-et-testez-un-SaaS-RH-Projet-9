@@ -5,6 +5,7 @@
 import { fireEvent, screen } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
+import { ROUTES_PATH } from "../constants/routes.js"
 
 describe("Given I am connected as an employee", () => {
 	describe("When I am on NewBill Page", () => {
@@ -37,6 +38,47 @@ describe("Given I am connected as an employee", () => {
 
 			// Vérification : le fichier est rejeté, le champ est vidé
 			expect(fileInput.value).toBe("")
+		})
+
+		test("Then it should post the new bill to the mock API", async () => {
+			// Génération de l'interface utilisateur de la page NewBill
+			document.body.innerHTML = NewBillUI()
+
+			// Surveillance de la fonction de navigation
+			const onNavigate = jest.fn()
+			// Surveillance de la méthode de mise à jour de l'API
+			const update = jest.fn().mockResolvedValue({})
+
+			// Configuration du faux store avec la méthode update mockée
+			const mockStore = {
+				bills: () => ({
+					update,
+				}),
+			}
+
+			// Simulation d'un utilisateur connecté (Employé) dans le stockage local
+			localStorage.setItem(
+				"user",
+				JSON.stringify({ type: "Employee", email: "a@a" }),
+			)
+
+			// Initialisation du contrôleur de la page NewBill
+			new NewBill({
+				document,
+				onNavigate,
+				store: mockStore,
+				localStorage: window.localStorage,
+			})
+
+			// Ciblage du formulaire dans le DOM
+			const form = screen.getByTestId("form-new-bill")
+			// Soumission du formulaire
+			fireEvent.submit(form)
+
+			// Vérification : Confirmation que la méthode update de l'API a bien été appelée
+			expect(update).toHaveBeenCalled()
+			// Vérification : Confirmation que l'app a bien navigué vers la route "Bills"
+			expect(onNavigate).toBeCalledWith(ROUTES_PATH.Bills)
 		})
 	})
 })
