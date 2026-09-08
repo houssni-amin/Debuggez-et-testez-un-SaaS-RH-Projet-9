@@ -80,5 +80,54 @@ describe("Given I am connected as an employee", () => {
 			// Vérification : Confirmation que l'app a bien navigué vers la route "Bills"
 			expect(onNavigate).toBeCalledWith(ROUTES_PATH.Bills)
 		})
+
+		test("Then if I upload a file that is a jpg, it should be accepted", () => {
+			// Affichage de la page
+			const html = NewBillUI()
+			document.body.innerHTML = html
+
+			// Ciblage de l'input d'upload
+			const fileInput = screen.getByTestId("file")
+
+			// Simulation d'une réponse réseau réussie lors de l'appel à la méthode create
+			const create = jest.fn().mockResolvedValue({})
+
+			// Configuration du faux store avec la méthode create mockée
+			const mockStore = {
+				bills: () => ({
+					create,
+				}),
+			}
+
+			// Simulation d'un utilisateur connecté
+			localStorage.setItem(
+				"user",
+				JSON.stringify({ type: "Employee", email: "a@a" }),
+			)
+
+			// Ajout de la logique js
+			new NewBill({
+				document,
+				onNavigate: () => {},
+				store: mockStore,
+				localStorage: window.localStorage,
+			})
+
+			// Création d'un faux fichier valide au format JPG
+			const rightFile = new File(["img"], "document.jpg", {
+				type: "image/jpg",
+			})
+
+			// Ajout du chemin d'accès du fichier
+			Object.defineProperty(fileInput, "value", {
+				value: `C:\\fakepath\\${rightFile.name}`,
+			})
+
+			// Simulation de l'ajout du fichier
+			fireEvent.change(fileInput, { target: { files: [rightFile] } })
+
+			// Vérification : Confirmation que la méthode "create" de l'API a bien été appelée
+			expect(create).toHaveBeenCalled()
+		})
 	})
 })
